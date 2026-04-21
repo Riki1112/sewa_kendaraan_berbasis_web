@@ -11,19 +11,19 @@ class GoogleController extends Controller
     public function redirect()
     {
         /** @var \Laravel\Socialite\Two\GoogleProvider $google */
-        $google = \Laravel\Socialite\Facades\Socialite::driver('google');
+        $google = Socialite::driver('google');
 
         return $google
-            ->with([
-                'prompt' => 'consent select_account',
-                'max_age' => 0,
-            ])
+            ->stateless()
             ->redirect();
     }
 
     public function callback()
     {
-        $googleUser = Socialite::driver('google')->user();
+        /** @var \Laravel\Socialite\Two\GoogleProvider $google */
+        $google = Socialite::driver('google');
+
+        $googleUser = $google->stateless()->user();
 
         $user = User::where('email', $googleUser->getEmail())->first();
 
@@ -44,6 +44,10 @@ class GoogleController extends Controller
         }
 
         Auth::login($user);
+
+        if ($user->role == 'admin') {
+            return redirect('/admin/dashboard');
+        }
 
         return redirect('/user/dashboard');
     }
