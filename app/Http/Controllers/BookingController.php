@@ -22,56 +22,52 @@ class BookingController extends Controller
     }
 
     // Simpan booking ke database
-    public function store(Request $request)
-    {
-        $request->validate([
-            'vehicle_id' => 'required|exists:vehicles,id',
-            'nama_lengkap' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'nomor_hp' => 'required|string|max:20',
-            'alamat' => 'required|string|max:255',
-            'alamat_lengkap' => 'nullable|string',
-            'tanggal_mulai' => 'required|date',
-            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
-        ]);
+        public function store(Request $request)
+        {
+            $request->validate([
+                'vehicle_id' => 'required|exists:vehicles,id',
+                'tanggal_mulai' => 'required|date',
+                'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            ]);
 
-        $vehicle = Vehicle::findOrFail($request->vehicle_id);
+            $vehicle = Vehicle::findOrFail($request->vehicle_id);
 
-        if (strtolower(trim($vehicle->status_ketersediaan)) != 'tersedia') {
-            return redirect('/user/dashboard')->with('error', 'Kendaraan sudah tidak tersedia');
+            if (strtolower(trim($vehicle->status_ketersediaan)) != 'tersedia') {
+                return redirect('/user/dashboard')->with('error', 'Kendaraan sudah tidak tersedia');
+            }
+
+            $lama = (strtotime($request->tanggal_selesai) - strtotime($request->tanggal_mulai)) / 86400;
+            $lama += 1;
+
+            $total = $lama * $vehicle->harga_sewa;
+
+            $booking = Booking::create([
+                'user_id' => Auth::id(),
+                'vehicle_id' => $vehicle->id,
+
+                // Data penyewa, dibuat aman supaya tidak bikin tombol error
+                'nama_penyewa' => $request->nama_lengkap ?? Auth::user()->name,
+                'email_penyewa' => $request->email ?? Auth::user()->email,
+                'nomor_hp' => $request->nomor_hp ?? null,
+                'alamat' => $request->alamat ?? null,
+                'alamat_lengkap' => $request->alamat_lengkap ?? $request->catatan_tambahan ?? null,
+
+                'tanggal_mulai' => $request->tanggal_mulai,
+                'tanggal_selesai' => $request->tanggal_selesai,
+                'lama_sewa' => $lama,
+                'total_harga' => $total,
+                'status_booking' => 'pending',
+                'companyCode' => 'SYS',
+                'status' => 1,
+                'isDeleted' => 0,
+                'createdBy' => Auth::user()->name,
+                'createdDate' => now(),
+                'lastUpdateBy' => Auth::user()->name,
+                'lastUpdateDate' => now(),
+            ]);
+
+            return redirect('/pay/' . $booking->id);
         }
-
-        $lama = (strtotime($request->tanggal_selesai) - strtotime($request->tanggal_mulai)) / 86400;
-        $lama += 1;
-
-        $total = $lama * $vehicle->harga_sewa;
-
-        $booking = Booking::create([
-            'user_id' => Auth::id(),
-            'vehicle_id' => $vehicle->id,
-
-            'nama_penyewa' => $request->nama_lengkap,
-            'email_penyewa' => $request->email,
-            'nomor_hp' => $request->nomor_hp,
-            'alamat' => $request->alamat,
-            'alamat_lengkap' => $request->alamat_lengkap,
-
-            'tanggal_mulai' => $request->tanggal_mulai,
-            'tanggal_selesai' => $request->tanggal_selesai,
-            'lama_sewa' => $lama,
-            'total_harga' => $total,
-            'status_booking' => 'pending',
-            'companyCode' => 'SYS',
-            'status' => 1,
-            'isDeleted' => 0,
-            'createdBy' => Auth::user()->name,
-            'createdDate' => now(),
-            'lastUpdateBy' => Auth::user()->name,
-            'lastUpdateDate' => now(),
-        ]);
-
-        return redirect('/pay/' . $booking->id);
-    }
 
     // ===========================
     // Method baru untuk admin dashboard
