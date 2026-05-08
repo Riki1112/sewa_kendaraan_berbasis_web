@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Vehicle;
 use App\Models\VehicleImage;
+use App\Models\Booking;
 use Illuminate\Http\Request;
-
 
 class VehicleController extends Controller
 {
@@ -92,55 +92,55 @@ class VehicleController extends Controller
         return view('vehicles.edit', compact('vehicle'));
     }
 
-public function update(Request $request, $id)
-{
-    $vehicle = Vehicle::findOrFail($id);
+    public function update(Request $request, $id)
+    {
+        $vehicle = Vehicle::findOrFail($id);
 
-    $request->validate([
-        'nama_kendaraan' => 'required',
-        'merek' => 'required',
-        'harga_sewa' => 'required',
-        'status_ketersediaan' => 'required',
-        'images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-    ]);
+        $request->validate([
+            'nama_kendaraan' => 'required',
+            'merek' => 'required',
+            'harga_sewa' => 'required',
+            'status_ketersediaan' => 'required',
+            'images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
 
-    $vehicle->update([
-        'nama_kendaraan' => $request->nama_kendaraan,
-        'merek' => $request->merek,
-        'plat_nomor' => $request->plat_nomor,
-        'tahun' => $request->tahun,
-        'harga_sewa' => $request->harga_sewa,
-        'status_ketersediaan' => $request->status_ketersediaan,
-        'warna' => $request->warna,
-        'transmisi' => $request->transmisi,
-        'bahan_bakar' => $request->bahan_bakar,
-        'kapasitas_mesin' => $request->kapasitas_mesin,
-        'jumlah_kursi' => $request->jumlah_kursi,
-        'kilometer' => $request->kilometer,
-        'tanggal_pajak' => $request->tanggal_pajak,
-        'status_servis' => $request->status_servis,
-        'terakhir_servis' => $request->terakhir_servis,
-        'nomor_stnk' => $request->nomor_stnk,
-        'nomor_rangka' => $request->nomor_rangka,
-        'nomor_mesin' => $request->nomor_mesin,
-        'deskripsi' => $request->deskripsi,
-    ]);
+        $vehicle->update([
+            'nama_kendaraan' => $request->nama_kendaraan,
+            'merek' => $request->merek,
+            'plat_nomor' => $request->plat_nomor,
+            'tahun' => $request->tahun,
+            'harga_sewa' => $request->harga_sewa,
+            'status_ketersediaan' => $request->status_ketersediaan,
+            'warna' => $request->warna,
+            'transmisi' => $request->transmisi,
+            'bahan_bakar' => $request->bahan_bakar,
+            'kapasitas_mesin' => $request->kapasitas_mesin,
+            'jumlah_kursi' => $request->jumlah_kursi,
+            'kilometer' => $request->kilometer,
+            'tanggal_pajak' => $request->tanggal_pajak,
+            'status_servis' => $request->status_servis,
+            'terakhir_servis' => $request->terakhir_servis,
+            'nomor_stnk' => $request->nomor_stnk,
+            'nomor_rangka' => $request->nomor_rangka,
+            'nomor_mesin' => $request->nomor_mesin,
+            'deskripsi' => $request->deskripsi,
+        ]);
 
-    if ($request->hasFile('images')) {
-        foreach ($request->file('images') as $image) {
-            $path = $image->store('vehicles', 'public');
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('vehicles', 'public');
 
-            \App\Models\VehicleImage::create([
-                'vehicle_id' => $vehicle->id,
-                'image' => $path,
-                'is_primary' => 0,
-            ]);
+                VehicleImage::create([
+                    'vehicle_id' => $vehicle->id,
+                    'image' => $path,
+                    'is_primary' => 0,
+                ]);
+            }
         }
-    }
 
-    return redirect('/vehicles/edit/' . $vehicle->id)
-        ->with('success', 'Data kendaraan berhasil diperbarui');
-}
+        return redirect('/vehicles/edit/' . $vehicle->id)
+            ->with('success', 'Data kendaraan berhasil diperbarui');
+    }
 
     public function show($id)
     {
@@ -150,13 +150,13 @@ public function update(Request $request, $id)
 
     public function userIndex()
     {
-        $vehicles = \App\Models\Vehicle::with('images')->get();
+        $vehicles = Vehicle::with('images')->get();
         return view('user.dashboard', compact('vehicles'));
     }
 
     public function userShow($id)
     {
-        $vehicle = \App\Models\Vehicle::with('images')->findOrFail($id);
+        $vehicle = Vehicle::with('images')->findOrFail($id);
         return view('user.detail', compact('vehicle'));
     }
 
@@ -177,7 +177,7 @@ public function update(Request $request, $id)
 
     public function deleteImage($id)
     {
-        $image = \App\Models\VehicleImage::findOrFail($id);
+        $image = VehicleImage::findOrFail($id);
 
         if ($image->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($image->image)) {
             \Illuminate\Support\Facades\Storage::disk('public')->delete($image->image);
@@ -190,19 +190,26 @@ public function update(Request $request, $id)
             ->with('success', 'Gambar berhasil dihapus');
     }
 
-        public function dashboard()
-        {
-            $totalVehicles = Vehicle::count();
-            $availableVehicles = Vehicle::where('status_ketersediaan', 'tersedia')->count();
-            $unavailableVehicles = Vehicle::where('status_ketersediaan', '!=', 'tersedia')->count();
-            $latestVehicles = Vehicle::latest('id')->take(5)->get();
+    public function dashboard()
+    {
+        $totalVehicles = Vehicle::count();
 
-            return view('admin.dashboard', compact(
-                'totalVehicles',
-                'availableVehicles',
-                'unavailableVehicles',
-                'latestVehicles'
-            ));
-        }
+        $availableVehicles = Vehicle::whereRaw('LOWER(TRIM(status_ketersediaan)) = ?', ['tersedia'])->count();
 
+        $unavailableVehicles = Vehicle::whereRaw('LOWER(TRIM(status_ketersediaan)) != ?', ['tersedia'])->count();
+
+        $latestVehicles = Vehicle::latest('id')->take(5)->get();
+
+        $bookings = Booking::with(['user', 'vehicle'])
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('admin.dashboard', compact(
+            'totalVehicles',
+            'availableVehicles',
+            'unavailableVehicles',
+            'latestVehicles',
+            'bookings'
+        ));
+    }
 }

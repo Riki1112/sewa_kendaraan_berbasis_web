@@ -52,7 +52,6 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/profile/update', [ProfileController::class, 'update']);
     Route::post('/profile/password', [ProfileController::class, 'updatePassword']);
 
-
 });
 
 

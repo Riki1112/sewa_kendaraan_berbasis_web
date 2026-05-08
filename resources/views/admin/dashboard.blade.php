@@ -159,6 +159,7 @@
             box-shadow: 0 10px 24px rgba(0,0,0,0.08);
             background: white;
             overflow: hidden;
+            margin-bottom: 24px;
         }
 
         .table-header {
@@ -180,10 +181,12 @@
             border-bottom: 1px solid #e5e7eb;
             color: #374151;
             font-size: 14px;
+            white-space: nowrap;
         }
 
         .table td {
             vertical-align: middle;
+            white-space: nowrap;
         }
 
         .status-pill {
@@ -202,6 +205,11 @@
         .status-unavailable {
             background: #fee2e2;
             color: #b91c1c;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
         }
     </style>
 </head>
@@ -316,6 +324,73 @@
                         <tr>
                             <td colspan="5" class="text-center text-muted py-4">
                                 Belum ada data kendaraan.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{-- BAGIAN TAMBAHAN: DAFTAR BOOKING --}}
+    <div class="table-card">
+        <div class="table-header">
+            <h4>Daftar Booking</h4>
+            <p>Ringkasan user yang sudah melakukan booking kendaraan.</p>
+        </div>
+
+        <div class="table-responsive px-3 pb-3">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Nama Penyewa</th>
+                        <th>Email</th>
+                        <th>Jenis Kendaraan</th>
+                        <th>Merek</th>
+                        <th>Plat Nomor</th>
+                        <th>Tanggal Mulai</th>
+                        <th>Tanggal Selesai</th>
+                        <th>Lama Sewa</th>
+                        <th>Total Harga</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($bookings ?? [] as $booking)
+                        <tr>
+                            <td>{{ $booking->user->name ?? '-' }}</td>
+                            <td>{{ $booking->user->email ?? '-' }}</td>
+                            <td>{{ $booking->vehicle->nama_kendaraan ?? '-' }}</td>
+                            <td>{{ $booking->vehicle->merek ?? '-' }}</td>
+                            <td>{{ $booking->vehicle->plat_nomor ?? '-' }}</td>
+                            <td>
+                                {{ $booking->tanggal_mulai ? \Carbon\Carbon::parse($booking->tanggal_mulai)->format('d-m-Y') : '-' }}
+                            </td>
+                            <td>
+                                {{ $booking->tanggal_selesai ? \Carbon\Carbon::parse($booking->tanggal_selesai)->format('d-m-Y') : '-' }}
+                            </td>
+                            <td>{{ $booking->lama_sewa ?? '-' }} Hari</td>
+                            <td>Rp {{ number_format($booking->total_harga ?? 0, 0, ',', '.') }}</td>
+                            <td>
+                                @php
+                                    $statusBooking = strtolower(trim($booking->status_booking ?? ''));
+                                @endphp
+
+                                @if($statusBooking == 'pending')
+                                    <span class="status-pill status-pending">Pending</span>
+                                @elseif($statusBooking == 'confirmed' || $statusBooking == 'selesai' || $statusBooking == 'success')
+                                    <span class="status-pill status-available">{{ ucfirst($booking->status_booking) }}</span>
+                                @else
+                                    <span class="status-pill status-unavailable">
+                                        {{ $booking->status_booking ?? '-' }}
+                                    </span>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="10" class="text-center text-muted py-4">
+                                Belum ada data booking.
                             </td>
                         </tr>
                     @endforelse

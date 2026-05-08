@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
+    // Form booking untuk user
     public function create($id)
     {
         $vehicle = Vehicle::findOrFail($id);
@@ -20,6 +21,7 @@ class BookingController extends Controller
         return view('booking.create', compact('vehicle'));
     }
 
+    // Simpan booking ke database
     public function store(Request $request)
     {
         $request->validate([
@@ -57,5 +59,16 @@ class BookingController extends Controller
         ]);
 
         return redirect('/pay/' . $booking->id);
+    }
+
+    // ============================
+    // Method baru untuk admin dashboard
+    // ============================
+    public function indexAdmin()
+    {
+        // Ambil semua booking dengan data user dan vehicle
+        $bookings = Booking::with(['user', 'vehicle'])->get();
+
+        return view('admin.dashboard', compact('bookings'));
     }
 }
