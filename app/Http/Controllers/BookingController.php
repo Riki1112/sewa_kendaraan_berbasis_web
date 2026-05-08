@@ -26,6 +26,11 @@ class BookingController extends Controller
     {
         $request->validate([
             'vehicle_id' => 'required|exists:vehicles,id',
+            'nama_lengkap' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'nomor_hp' => 'required|string|max:20',
+            'alamat' => 'required|string|max:255',
+            'alamat_lengkap' => 'nullable|string',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
         ]);
@@ -44,6 +49,13 @@ class BookingController extends Controller
         $booking = Booking::create([
             'user_id' => Auth::id(),
             'vehicle_id' => $vehicle->id,
+
+            'nama_penyewa' => $request->nama_lengkap,
+            'email_penyewa' => $request->email,
+            'nomor_hp' => $request->nomor_hp,
+            'alamat' => $request->alamat,
+            'alamat_lengkap' => $request->alamat_lengkap,
+
             'tanggal_mulai' => $request->tanggal_mulai,
             'tanggal_selesai' => $request->tanggal_selesai,
             'lama_sewa' => $lama,
@@ -61,9 +73,9 @@ class BookingController extends Controller
         return redirect('/pay/' . $booking->id);
     }
 
-    // ============================
+    // ===========================
     // Method baru untuk admin dashboard
-    // ============================
+    // ===========================
     public function indexAdmin()
     {
         // Ambil semua booking dengan data user dan vehicle
