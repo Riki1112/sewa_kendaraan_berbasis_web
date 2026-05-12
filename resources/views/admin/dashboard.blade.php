@@ -400,8 +400,7 @@
         </div>
     </div>
 
-    {{-- BAGIAN TAMBAHAN: DAFTAR BOOKING --}}
-    {{-- BAGIAN DAFTAR BOOKING RINGKAS + MODAL DETAIL --}}
+{{-- BAGIAN TAMBAHAN: DAFTAR BOOKING --}}
 <div class="table-card">
     <div class="table-header">
         <h4>Daftar Booking</h4>
@@ -412,20 +411,32 @@
         <table class="table align-middle mb-0">
             <thead>
                 <tr>
+                    <th width="120">Aksi</th>
                     <th>Nama Penyewa</th>
                     <th>Kendaraan</th>
                     <th>Tanggal Sewa</th>
                     <th>Total Harga</th>
                     <th>Status</th>
-                    <th width="120">Aksi</th>
                 </tr>
             </thead>
+
             <tbody>
                 @forelse($bookings ?? [] as $booking)
                     <tr>
                         <td>
-                            <strong>{{ $booking->user->name ?? '-' }}</strong><br>
-                            <small class="text-muted">{{ $booking->user->email ?? '-' }}</small>
+                            <button type="button"
+                                    class="btn btn-primary btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#detailBooking{{ $booking->id }}">
+                                Detail
+                            </button>
+                        </td>
+
+                        <td>
+                            <strong>{{ $booking->nama_penyewa ?? $booking->user->name ?? '-' }}</strong><br>
+                            <small class="text-muted">
+                                {{ $booking->email_penyewa ?? $booking->user->email ?? '-' }}
+                            </small>
                         </td>
 
                         <td>
@@ -462,231 +473,7 @@
                                 </span>
                             @endif
                         </td>
-
-                        <td>
-                            <button type="button"
-                                    class="btn btn-primary btn-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#detailBooking{{ $booking->id }}">
-                                Detail
-                            </button>
-                        </td>
                     </tr>
-
-                    {{-- MODAL DETAIL BOOKING --}}
-                    <div class="modal fade booking-modal" id="detailBooking{{ $booking->id }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <div>
-                                        <h5 class="modal-title">Detail Booking</h5>
-                                        <small class="text-muted">ID Booking: #{{ $booking->id }}</small>
-                                    </div>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <div class="row g-4">
-
-                                    {{-- DATA PENYEWA --}}
-                                    <div class="col-md-6">
-                                        <div class="detail-section">
-                                            <h6>Data Penyewa</h6>
-
-                                            <div class="detail-item">
-                                                <div class="detail-label">Nama</div>
-                                                <div class="detail-value">
-                                                    {{ $booking->nama_penyewa ?? $booking->user->name ?? '-' }}
-                                                </div>
-                                            </div>
-
-                                            <div class="detail-item">
-                                                <div class="detail-label">Email</div>
-                                                <div class="detail-value">
-                                                    {{ $booking->email_penyewa ?? $booking->user->email ?? '-' }}
-                                                </div>
-                                            </div>
-
-                                            <div class="detail-item">
-                                                <div class="detail-label">Nomor HP</div>
-                                                <div class="detail-value">
-                                                    {{ $booking->nomor_hp ?? '-' }}
-                                                </div>
-                                            </div>
-
-                                            <div class="detail-item">
-                                                <div class="detail-label">Alamat</div>
-                                                <div class="detail-value">
-                                                    {{ $booking->alamat ?? '-' }}
-                                                </div>
-                                            </div>
-
-                                            <div class="detail-item">
-                                                <div class="detail-label">Alamat Lengkap / Catatan</div>
-                                                <div class="detail-value">
-                                                    {{ $booking->alamat_lengkap ?? '-' }}
-                                                </div>
-                                            </div>
-
-                                            <div class="detail-item">
-                                                <div class="detail-label">User ID</div>
-                                                <div class="detail-value">
-                                                    {{ $booking->user_id ?? '-' }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                        {{-- DATA KENDARAAN --}}
-                                        <div class="col-md-6">
-                                            <div class="border rounded-3 p-3 h-100">
-                                                <h6 class="fw-bold mb-3">Data Kendaraan</h6>
-
-                                                <p class="mb-2">
-                                                    <strong>Nama Kendaraan:</strong><br>
-                                                    {{ $booking->vehicle->nama_kendaraan ?? '-' }}
-                                                </p>
-
-                                                <p class="mb-2">
-                                                    <strong>Merek:</strong><br>
-                                                    {{ $booking->vehicle->merek ?? '-' }}
-                                                </p>
-
-                                                <p class="mb-2">
-                                                    <strong>Plat Nomor:</strong><br>
-                                                    {{ $booking->vehicle->plat_nomor ?? '-' }}
-                                                </p>
-
-                                                <p class="mb-2">
-                                                    <strong>Tahun:</strong><br>
-                                                    {{ $booking->vehicle->tahun ?? '-' }}
-                                                </p>
-
-                                                <p class="mb-2">
-                                                    <strong>Harga Sewa / Hari:</strong><br>
-                                                    Rp {{ number_format($booking->vehicle->harga_sewa ?? 0, 0, ',', '.') }}
-                                                </p>
-
-                                                <p class="mb-0">
-                                                    <strong>Status Kendaraan:</strong><br>
-                                                    {{ $booking->vehicle->status_ketersediaan ?? '-' }}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        {{-- DATA BOOKING --}}
-                                        <div class="col-md-12">
-                                            <div class="border rounded-3 p-3">
-                                                <h6 class="fw-bold mb-3">Data Booking</h6>
-
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <p class="mb-2">
-                                                            <strong>Tanggal Mulai:</strong><br>
-                                                            {{ $booking->tanggal_mulai ? \Carbon\Carbon::parse($booking->tanggal_mulai)->format('d-m-Y') : '-' }}
-                                                        </p>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <p class="mb-2">
-                                                            <strong>Tanggal Selesai:</strong><br>
-                                                            {{ $booking->tanggal_selesai ? \Carbon\Carbon::parse($booking->tanggal_selesai)->format('d-m-Y') : '-' }}
-                                                        </p>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <p class="mb-2">
-                                                            <strong>Lama Sewa:</strong><br>
-                                                            {{ $booking->lama_sewa ?? '-' }} Hari
-                                                        </p>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <p class="mb-2">
-                                                            <strong>Total Harga:</strong><br>
-                                                            Rp {{ number_format($booking->total_harga ?? 0, 0, ',', '.') }}
-                                                        </p>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <p class="mb-2">
-                                                            <strong>Status Booking:</strong><br>
-                                                            {{ $booking->status_booking ?? '-' }}
-                                                        </p>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <p class="mb-2">
-                                                            <strong>Status Data:</strong><br>
-                                                            {{ $booking->status ?? '-' }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {{-- DATA SYSTEM --}}
-                                        <div class="col-md-12">
-                                            <div class="border rounded-3 p-3 bg-light">
-                                                <h6 class="fw-bold mb-3">Data Sistem</h6>
-
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <p class="mb-2">
-                                                            <strong>Company Code:</strong><br>
-                                                            {{ $booking->companyCode ?? '-' }}
-                                                        </p>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <p class="mb-2">
-                                                            <strong>Is Deleted:</strong><br>
-                                                            {{ $booking->isDeleted ?? '-' }}
-                                                        </p>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <p class="mb-2">
-                                                            <strong>Dibuat Oleh:</strong><br>
-                                                            {{ $booking->createdBy ?? '-' }}
-                                                        </p>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <p class="mb-2">
-                                                            <strong>Tanggal Dibuat:</strong><br>
-                                                            {{ $booking->createdDate ? \Carbon\Carbon::parse($booking->createdDate)->format('d-m-Y H:i') : '-' }}
-                                                        </p>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <p class="mb-2">
-                                                            <strong>Update Terakhir Oleh:</strong><br>
-                                                            {{ $booking->lastUpdateBy ?? '-' }}
-                                                        </p>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <p class="mb-0">
-                                                            <strong>Tanggal Update Terakhir:</strong><br>
-                                                            {{ $booking->lastUpdateDate ? \Carbon\Carbon::parse($booking->lastUpdateDate)->format('d-m-Y H:i') : '-' }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                        Tutup
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 @empty
                     <tr>
                         <td colspan="6" class="text-center text-muted py-4">
@@ -698,6 +485,262 @@
         </table>
     </div>
 </div>
+
+
+{{-- MODAL DETAIL BOOKING - DITARUH DI LUAR TABLE --}}
+@foreach($bookings ?? [] as $booking)
+    <div class="modal fade booking-modal" id="detailBooking{{ $booking->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title">Detail Booking</h5>
+                        <small>ID Booking: #{{ $booking->id }}</small>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row g-4">
+
+                        {{-- DATA PENYEWA --}}
+                        <div class="col-md-6">
+                            <div class="detail-section">
+                                <h6>Data Penyewa</h6>
+
+                                <div class="detail-item">
+                                    <div class="detail-label">Nama</div>
+                                    <div class="detail-value">
+                                        {{ $booking->nama_penyewa ?? $booking->user->name ?? '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <div class="detail-label">Email</div>
+                                    <div class="detail-value">
+                                        {{ $booking->email_penyewa ?? $booking->user->email ?? '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <div class="detail-label">Nomor HP</div>
+                                    <div class="detail-value">
+                                        {{ $booking->nomor_hp ?? '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <div class="detail-label">Alamat</div>
+                                    <div class="detail-value">
+                                        {{ $booking->alamat ?? '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <div class="detail-label">Alamat Lengkap / Catatan</div>
+                                    <div class="detail-value">
+                                        {{ $booking->alamat_lengkap ?? '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <div class="detail-label">User ID</div>
+                                    <div class="detail-value">
+                                        {{ $booking->user_id ?? '-' }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- DATA KENDARAAN --}}
+                        <div class="col-md-6">
+                            <div class="detail-section">
+                                <h6>Data Kendaraan</h6>
+
+                                <div class="detail-item">
+                                    <div class="detail-label">Nama Kendaraan</div>
+                                    <div class="detail-value">
+                                        {{ $booking->vehicle->nama_kendaraan ?? '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <div class="detail-label">Merek</div>
+                                    <div class="detail-value">
+                                        {{ $booking->vehicle->merek ?? '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <div class="detail-label">Plat Nomor</div>
+                                    <div class="detail-value">
+                                        {{ $booking->vehicle->plat_nomor ?? '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <div class="detail-label">Tahun</div>
+                                    <div class="detail-value">
+                                        {{ $booking->vehicle->tahun ?? '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <div class="detail-label">Harga Sewa / Hari</div>
+                                    <div class="detail-value">
+                                        Rp {{ number_format($booking->vehicle->harga_sewa ?? 0, 0, ',', '.') }}
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <div class="detail-label">Status Kendaraan</div>
+                                    <div class="detail-value">
+                                        {{ $booking->vehicle->status_ketersediaan ?? '-' }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- DATA BOOKING --}}
+                        <div class="col-md-12">
+                            <div class="detail-section">
+                                <h6>Data Booking</h6>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Tanggal Mulai</div>
+                                            <div class="detail-value">
+                                                {{ $booking->tanggal_mulai ? \Carbon\Carbon::parse($booking->tanggal_mulai)->format('d-m-Y') : '-' }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Tanggal Selesai</div>
+                                            <div class="detail-value">
+                                                {{ $booking->tanggal_selesai ? \Carbon\Carbon::parse($booking->tanggal_selesai)->format('d-m-Y') : '-' }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Lama Sewa</div>
+                                            <div class="detail-value">
+                                                {{ $booking->lama_sewa ?? '-' }} Hari
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="detail-item price-box">
+                                            <div class="detail-label">Total Harga</div>
+                                            <div class="detail-value">
+                                                Rp {{ number_format($booking->total_harga ?? 0, 0, ',', '.') }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Status Booking</div>
+                                            <div class="detail-value">
+                                                {{ $booking->status_booking ?? '-' }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Status Data</div>
+                                            <div class="detail-value">
+                                                {{ $booking->status ?? '-' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- DATA SISTEM --}}
+                        <div class="col-md-12">
+                            <div class="detail-section bg-light">
+                                <h6>Data Sistem</h6>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Company Code</div>
+                                            <div class="detail-value">
+                                                {{ $booking->companyCode ?? '-' }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Is Deleted</div>
+                                            <div class="detail-value">
+                                                {{ $booking->isDeleted ?? '-' }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Dibuat Oleh</div>
+                                            <div class="detail-value">
+                                                {{ $booking->createdBy ?? '-' }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Tanggal Dibuat</div>
+                                            <div class="detail-value">
+                                                {{ $booking->createdDate ? \Carbon\Carbon::parse($booking->createdDate)->format('d-m-Y H:i') : '-' }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Update Terakhir Oleh</div>
+                                            <div class="detail-value">
+                                                {{ $booking->lastUpdateBy ?? '-' }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <div class="detail-label">Tanggal Update Terakhir</div>
+                                            <div class="detail-value">
+                                                {{ $booking->lastUpdateDate ? \Carbon\Carbon::parse($booking->lastUpdateDate)->format('d-m-Y H:i') : '-' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Tutup
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+@endforeach
 
 </div>
 
