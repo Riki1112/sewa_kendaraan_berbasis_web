@@ -132,6 +132,11 @@ class PaymentController extends Controller
             'status_booking' => 'dibayar',
         ]);
 
+        // UPDATE STATUS MOBIL
+        $booking->vehicle->update([
+            'status_ketersediaan' => 'tidak tersedia'
+        ]);
+
         return response()->json([
             'success' => true
         ]);
