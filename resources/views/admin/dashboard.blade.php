@@ -292,6 +292,11 @@
                 Halo, {{ auth()->user()->name }}
             </span>
 
+            <a href="{{ route('reports.booking') }}"
+            class="btn btn-light btn-sm fw-bold">
+                Reports
+            </a>
+
             <form method="POST" action="/logout" class="m-0">
                 @csrf
                 <button class="btn btn-outline-light btn-sm">Logout</button>
@@ -332,6 +337,28 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-top">
+
+                <div>
+                    <div class="stat-title">
+                        Total Revenue
+                    </div>
+
+                    <div class="stat-value">
+                        Rp {{ number_format($totalRevenue ?? 0) }}
+                    </div>
+                </div>
+
+                <div class="stat-icon icon-green">
+                    💰
+                </div>
+
+            </div>
+        </div>
+    </div>
 
         <div class="col-md-4">
             <div class="stat-card">

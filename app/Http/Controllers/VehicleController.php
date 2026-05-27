@@ -6,6 +6,7 @@ use App\Models\Vehicle;
 use App\Models\VehicleImage;
 use App\Models\Booking;
 use Illuminate\Http\Request;
+use App\Models\Payment;
 
 class VehicleController extends Controller
 {
@@ -203,6 +204,11 @@ class VehicleController extends Controller
         $bookings = Booking::with(['user', 'vehicle'])
             ->orderBy('id', 'desc')
             ->get();
+        
+        $totalRevenue = Payment::where(
+            'transaction_status',
+            'settlement'
+        )->sum('gross_amount');
 
         return view('admin.dashboard', compact(
             'totalVehicles',

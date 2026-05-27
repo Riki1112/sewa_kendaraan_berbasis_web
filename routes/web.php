@@ -7,6 +7,7 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
 
 // guest
 Route::get('/login', [AuthController::class, 'showLogin']);
@@ -33,6 +34,13 @@ Route::get('/admin/dashboard', [VehicleController::class, 'dashboard']);
     Route::get('/vehicles/detail/{id}', [VehicleController::class, 'show']);
     Route::delete('/vehicles/image/delete/{id}', [VehicleController::class, 'deleteImage']);
     Route::post('/vehicles/image/set-primary/{id}', [VehicleController::class, 'setPrimaryImage']);
+    Route::get('/admin/reports/bookings',
+        [ReportController::class, 'bookingReport']
+    )->name('reports.booking');
+    Route::get('/admin/reports/export/pdf',
+        [ReportController::class, 'exportPdf']
+    )->name('reports.export.pdf');
+    
 });
 
 // dashboard user
