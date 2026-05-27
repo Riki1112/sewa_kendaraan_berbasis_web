@@ -1,3 +1,26 @@
 #mainVehicleImage {
     transition: opacity 0.2s ease;
 }
+
+/* Tambahkan di akhir file CSS global */
+.warning-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #FFC107;
+    color: #000;
+    border-radius: 4px;
+    margin-left: 5px;
+}
+
+.danger-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #DC3545;
+    color: #fff;
+    border-radius: 4px;
+    margin-left: 5px;
+}

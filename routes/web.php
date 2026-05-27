@@ -45,12 +45,15 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     Route::get('/pay/{id}', [PaymentController::class, 'create']);
     Route::post('/pay/select-method', [PaymentController::class, 'selectMethod']);
-    Route::post('/pay/process', [PaymentController::class, 'processPayment']);
     Route::get('/pay/receipt/{id}', [PaymentController::class, 'receipt']);
 
     Route::get('/profile', [ProfileController::class, 'index']);
     Route::post('/profile/update', [ProfileController::class, 'update']);
     Route::post('/profile/password', [ProfileController::class, 'updatePassword']);
+
+    Route::post('/process-payment', [PaymentController::class, 'processPayment'])
+    ->name('process.payment');
+    Route::post('/payment/success/{id}', [PaymentController::class, 'paymentSuccess']);
 
 });
 

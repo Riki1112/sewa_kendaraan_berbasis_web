@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Kendaraan</title>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
@@ -287,15 +288,32 @@
     </div>
 </nav>
 
-<div class="container py-4">
-    <div class="hero d-flex justify-content-between align-items-center flex-wrap gap-3">
-        <div>
-            <h1>Daftar Kendaraan</h1>
-            <p>Kelola data kendaraan dengan tampilan yang lebih rapi, modern, dan mudah dipantau.</p>
-        </div>
+        <div class="container py-4">
+            <div class="hero d-flex justify-content-between align-items-center mb-4 flex-wrap">
+                <div>
+                    <h1>Daftar Kendaraan</h1>
+                    <p>Kelola data kendaraan dengan tampilan yang lebih rapi, modern, dan mudah dipantau.</p>
+                </div>
+                <a href="/vehicles/create" class="btn btn-light btn-add hero-action">+ Tambah Kendaraan</a>
+            </div>
 
-        <a href="/vehicles/create" class="btn btn-light btn-add hero-action">+ Tambah Kendaraan</a>
-    </div>
+            
+        <div class="vehicle-list d-flex flex-wrap gap-3">
+            @foreach($vehicles as $vehicle)
+            <div class="card p-3 text-center" style="width: 200px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+                <h3>{{ $vehicle->nama_kendaraan }}</h3>
+
+                @if(\Carbon\Carbon::parse($vehicle->tanggal_pajak)->lte(\Carbon\Carbon::now()))
+                    <span class="badge bg-warning text-dark mt-2 d-block">⚠ Pajak Harus Dibayar</span>
+                @endif
+
+                @if(\Carbon\Carbon::parse($vehicle->terakhir_servis)->lte(\Carbon\Carbon::now()->subMonths(6)))
+                    <span class="badge bg-danger mt-2 d-block">⚠ Servis Sudah Lewat 6 Bulan</span>
+                @endif
+            </div>
+            @endforeach
+        </div>
+        </div>
 
     <div class="row g-4">
         @foreach($vehicles as $v)

@@ -11,11 +11,11 @@ class VehicleController extends Controller
 {
     public function index()
     {
-        $vehicles = Vehicle::with('images')->get();
+        $vehicles = Vehicle::all(); // ambil semua kendaraan
         return view('vehicles.index', compact('vehicles'));
     }
 
-    public function create()
+    public function create()    
     {
         return view('vehicles.create');
     }

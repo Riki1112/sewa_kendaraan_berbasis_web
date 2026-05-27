@@ -215,51 +215,54 @@
                         @csrf
                         <input type="hidden" name="booking_id" value="{{ $booking->id }}">
 
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <input type="radio" class="btn-check" name="payment_type" id="bank_transfer" value="Bank Transfer" required>
-                                <label class="method-option w-100" for="bank_transfer">
-                                    <span class="method-badge">Rekomendasi</span>
-                                    <div class="method-title">Bank Transfer</div>
-                                    <p class="method-desc">Transfer melalui rekening bank untuk pembayaran yang aman dan terverifikasi.</p>
-                                </label>
-                            </div>
+                            <div class="row g-3">
 
-                            <div class="col-md-6">
-                                <input type="radio" class="btn-check" name="payment_type" id="ewallet" value="E-Wallet" required>
-                                <label class="method-option w-100" for="ewallet">
-                                    <span class="method-badge">Praktis</span>
-                                    <div class="method-title">E-Wallet</div>
-                                    <p class="method-desc">Gunakan OVO, DANA, GoPay, atau ShopeePay untuk transaksi yang cepat.</p>
-                                </label>
-                            </div>
+                                <!-- ONLINE PAYMENT -->
+                                <div class="col-md-6">
+                                    <input class="btn-check" type="radio" name="payment_type"
+                                        id="online" value="online" checked>
 
-                            <div class="col-md-6">
-                                <input type="radio" class="btn-check" name="payment_type" id="credit_card" value="Credit Card" required>
-                                <label class="method-option w-100" for="credit_card">
-                                    <span class="method-badge">Fleksibel</span>
-                                    <div class="method-title">Credit Card</div>
-                                    <p class="method-desc">Pembayaran dengan kartu kredit untuk kemudahan transaksi non-tunai.</p>
-                                </label>
-                            </div>
+                                    <label class="method-option" for="online">
+                                        <span class="method-badge">Rekomendasi</span>
 
-                            <div class="col-md-6">
-                                <input type="radio" class="btn-check" name="payment_type" id="cash" value="Cash" required>
-                                <label class="method-option w-100" for="cash">
-                                    <span class="method-badge">Langsung</span>
-                                    <div class="method-title">Cash</div>
-                                    <p class="method-desc">Bayar langsung di tempat sesuai prosedur yang berlaku di lokasi rental.</p>
-                                </label>
-                            </div>
-                        </div>
+                                        <div class="method-title">
+                                            Online Payment
+                                        </div>
 
-                        <div class="small-note">
-                            Pastikan metode pembayaran yang dipilih sudah benar sebelum menekan tombol konfirmasi.
-                        </div>
+                                        <p class="method-desc">
+                                            Pembayaran online menggunakan Midtrans
+                                            seperti QRIS, Virtual Account,
+                                            GoPay, ShopeePay, dan lainnya.
+                                        </p>
+                                    </label>
+                                </div>
+
+                                <!-- CASH -->
+                                <div class="col-md-6">
+                                    <input class="btn-check" type="radio" name="payment_type"
+                                        id="cash" value="cash">
+
+                                    <label class="method-option" for="cash">
+                                        <span class="method-badge">Langsung</span>
+
+                                        <div class="method-title">
+                                            Cash
+                                        </div>
+
+                                        <p class="method-desc">
+                                            Pembayaran langsung di tempat
+                                            sesuai prosedur rental kendaraan.
+                                        </p>
+                                    </label>
+                                </div>
+
+                            </div>
 
                         <div class="action-row">
                             <a href="/pay/{{ $booking->id }}" class="btn btn-outline-secondary btn-custom">Kembali</a>
-                            <button type="submit" class="btn btn-confirm btn-custom">Konfirmasi Pembayaran</button>
+                            <button type="button" id="pay-button" class="btn btn-confirm btn-custom">
+                                Konfirmasi Pembayaran
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -267,6 +270,87 @@
         </div>
     </div>
 </div>
+
+<script 
+src="https://app.sandbox.midtrans.com/snap/snap.js"
+data-client-key="{{ config('midtrans.clientKey') }}">
+</script>
+
+<script>
+document.getElementById('pay-button').onclick = function () {
+
+    let selectedPayment =
+        document.querySelector('input[name="payment_type"]:checked').value;
+
+    // CASH
+    if (selectedPayment === 'cash') {
+
+        fetch("{{ route('process.payment') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                booking_id: "{{ $booking->id }}",
+                payment_type: "cash"
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            window.location.href =
+                "/pay/receipt/" + data.payment_id;
+        });
+
+        return;
+    }
+
+    // MIDTRANS ONLINE PAYMENT
+    fetch("{{ route('process.payment') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: JSON.stringify({
+            booking_id: "{{ $booking->id }}",
+            payment_type: "online"
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        snap.pay(data.snap_token, {
+
+            onSuccess: function(result) {
+
+                fetch("/payment/success/" + data.payment_id, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    }
+                })
+                .then(() => {
+                    window.location.href =
+                        "/pay/receipt/" + data.payment_id;
+                });
+
+            },
+
+            onPending: function(result) {
+                alert("Menunggu pembayaran");
+            },
+
+            onError: function(result) {
+                alert("Pembayaran gagal");
+            }
+
+        });
+
+    });
+
+};
+</script>
 
 </body>
 </html>
