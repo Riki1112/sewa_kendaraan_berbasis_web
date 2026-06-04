@@ -279,28 +279,70 @@
             font-size: 22px;
             font-weight: 800;
         }
+
+        .navbar-custom {
+    overflow: visible !important;
+        }
+
+        .navbar {
+            position: relative;
+            z-index: 1050;
+        }
+
+        .dropdown-menu {
+            z-index: 9999 !important;
+        }
     </style>
 </head>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-custom px-4 shadow-sm">
     <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="/admin/dashboard">Admin Panel</a>
+
+        <a class="navbar-brand fw-bold" href="/admin/dashboard">
+            Admin Panel
+        </a>
 
         <div class="ms-auto d-flex align-items-center gap-3">
+
             <span class="nav-text">
                 Halo, {{ auth()->user()->name }}
             </span>
 
-            <a href="{{ route('reports.booking') }}"
-            class="btn btn-light btn-sm fw-bold">
-                Reports
-            </a>
+            <!-- DROPDOWN REPORTS FIX -->
+            <div class="dropdown">
+                <button class="btn btn-light btn-sm fw-bold dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    Reports
+                </button>
 
+                <ul class="dropdown-menu dropdown-menu-end">
+
+                    <li>
+                        <a class="dropdown-item" href="{{ route('reports.booking') }}">
+                            Booking Reports
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item" href="{{ route('reports.vehicle') }}">
+                            Vehicle Reports
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+
+            <!-- LOGOUT -->
             <form method="POST" action="/logout" class="m-0">
                 @csrf
-                <button class="btn btn-outline-light btn-sm">Logout</button>
+                <button class="btn btn-outline-light btn-sm">
+                    Logout
+                </button>
             </form>
+
         </div>
     </div>
 </nav>
@@ -771,7 +813,6 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -65,7 +65,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
 });
 
-
+// Vehicle Reports
+Route::get('/admin/reports/vehicles', [ReportController::class, 'vehicleReport'])->name('reports.vehicle');
+Route::get('/admin/reports/vehicles/export/pdf', [ReportController::class, 'exportVehiclePdf'])->name('reports.export.vehicle.pdf');
 
 Route::get('/', function () {
     return redirect('/login');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\Payment;
+use App\Models\Vehicle;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
@@ -18,9 +19,9 @@ class ReportController extends Controller
 
         // FILTER TANGGAL
         if ($request->start_date && $request->end_date) {
-            $query->whereBetween('created_at', [
-                $request->start_date,
-                $request->end_date
+            $query->whereBetween('createdDate', [
+                $request->start_date . ' 00:00:00',
+                $request->end_date . ' 23:59:59'
             ]);
         }
 
@@ -56,5 +57,37 @@ class ReportController extends Controller
                 ->setPaper('a4', 'portrait'); // ukuran kertas
 
         return $pdf->download('booking-report.pdf'); // langsung download
+    }
+
+    public function vehicleReport()
+    {
+        $vehicles = Vehicle::orderBy('id', 'desc')->get();
+
+$totalVehicles = Vehicle::count();
+
+$availableVehicles = Vehicle::where('status_ketersediaan', 'tersedia')->count();
+
+$rentedVehicles = Vehicle::where('status_ketersediaan', 'tidak tersedia')->count();
+        return view(
+            'admin.reports.vehicle',
+            compact(
+                'vehicles',
+                'totalVehicles',
+                'availableVehicles',
+                'rentedVehicles'
+            )
+        );
+    }
+
+    public function exportVehiclePdf()
+    {
+        $vehicles = Vehicle::orderBy('id', 'desc')->get();
+
+        $pdf = Pdf::loadView(
+            'admin.reports.vehicle_pdf',
+            compact('vehicles')
+        )->setPaper('a4', 'portrait');
+
+        return $pdf->download('vehicle-report.pdf');
     }
 }
