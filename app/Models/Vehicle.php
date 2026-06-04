@@ -46,16 +46,20 @@ protected $fillable = [
         return $this->hasMany(VehicleImage::class);
     }
 
-    public function isTaxDue()
+public function isTaxDue()
 {
-    // Pajak jatuh tempo jika tanggal sekarang >= tax_due_date
-    return $this->tax_due_date && Carbon::now()->greaterThanOrEqualTo(Carbon::parse($this->tax_due_date));
+    if (!$this->tanggal_pajak) return false;
+
+    return Carbon::now()->greaterThanOrEqualTo(Carbon::parse($this->tanggal_pajak));
 }
 
 public function isServiceOverdue()
 {
-    // Servis overdue jika lebih dari 6 bulan dari terakhir servis
-    return $this->last_service_date && Carbon::now()->greaterThanOrEqualTo(Carbon::parse($this->last_service_date)->addMonths(6));
+    if (!$this->terakhir_servis) return false;
+
+    return Carbon::now()->greaterThanOrEqualTo(
+        Carbon::parse($this->terakhir_servis)->addMonths(6)
+    );
 }
 
     const CREATED_AT = 'createdDate';
