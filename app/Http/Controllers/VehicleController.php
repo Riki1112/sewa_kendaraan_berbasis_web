@@ -205,17 +205,17 @@ class VehicleController extends Controller
             ->orderBy('id', 'desc')
             ->get();
         
-        $totalRevenue = Payment::where(
-            'transaction_status',
-            'settlement'
-        )->sum('gross_amount');
+
+        $totalRevenue = Payment::where('transaction_status', 'settlement')
+            ->sum('gross_amount');
 
         return view('admin.dashboard', compact(
             'totalVehicles',
             'availableVehicles',
             'unavailableVehicles',
             'latestVehicles',
-            'bookings'
+            'bookings',
+            'totalRevenue' 
         ));
     }
 }
