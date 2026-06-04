@@ -292,6 +292,54 @@
         .dropdown-menu {
             z-index: 9999 !important;
         }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-title {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        /* ICON */
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        /* warna icon */
+        .icon-blue { background: #dbeafe; }
+        .icon-green { background: #dcfce7; }
+        .icon-red { background: #fee2e2; }
+        .icon-yellow { background: #fef3c7; }
+
+        /* 🔥 KHUSUS REVENUE BIAR TIDAK TERLALU BESAR */
+        .revenue-value {
+            font-size: 20px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -355,65 +403,59 @@
         <p>Kelola kendaraan, lihat ringkasan data, dan akses fitur penting dengan cepat dari dashboard ini.</p>
     </div>
 
-    <div class="row g-4 mb-4">
-        <div class="col-md-4">
-            <div class="stat-card">
-                <div class="stat-top">
-                    <div>
-                        <div class="stat-title">Total Kendaraan</div>
-                        <div class="stat-value">{{ $totalVehicles ?? 0 }}</div>
-                    </div>
-                    <div class="stat-icon icon-blue">🚗</div>
-                </div>
-            </div>
-        </div>
+<div class="row g-4 mb-4">
 
-        <div class="col-md-4">
-            <div class="stat-card">
-                <div class="stat-top">
-                    <div>
-                        <div class="stat-title">Kendaraan Tersedia</div>
-                        <div class="stat-value">{{ $availableVehicles ?? 0 }}</div>
-                    </div>
-                    <div class="stat-icon icon-green">✓</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
+    <div class="col-lg-3 col-md-6">
         <div class="stat-card">
             <div class="stat-top">
-
                 <div>
-                    <div class="stat-title">
-                        Total Revenue
-                    </div>
-
-                    <div class="stat-value">
-                        Rp {{ number_format($totalRevenue ?? 0) }}
-                    </div>
+                    <div class="stat-title">Total Kendaraan</div>
+                    <div class="stat-value">{{ $totalVehicles ?? 0 }}</div>
                 </div>
-
-                <div class="stat-icon icon-green">
-                    💰
-                </div>
-
+                <div class="stat-icon icon-blue">🚗</div>
             </div>
         </div>
     </div>
 
-        <div class="col-md-4">
-            <div class="stat-card">
-                <div class="stat-top">
-                    <div>
-                        <div class="stat-title">Tidak Tersedia</div>
-                        <div class="stat-value">{{ $unavailableVehicles ?? 0 }}</div>
-                    </div>
-                    <div class="stat-icon icon-red">!</div>
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-top">
+                <div>
+                    <div class="stat-title">Kendaraan Tersedia</div>
+                    <div class="stat-value">{{ $availableVehicles ?? 0 }}</div>
                 </div>
+                <div class="stat-icon icon-green">✓</div>
             </div>
         </div>
     </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-top">
+                <div>
+                    <div class="stat-title">Tidak Tersedia</div>
+                    <div class="stat-value">{{ $unavailableVehicles ?? 0 }}</div>
+                </div>
+                <div class="stat-icon icon-red">!</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card revenue-card">
+            <div class="stat-top">
+                <div>
+                    <div class="stat-title">Total Revenue</div>
+                    <div class="stat-value revenue-value">
+                        Rp {{ number_format($totalRevenue ?? 0,0,",",".") }}
+                    </div>
+                </div>
+                <div class="stat-icon icon-yellow">💰</div>
+            </div>
+        </div>
+    </div>
+
+</div>
 
     <div class="panel-card mb-4">
         <div class="panel-title">Quick Actions</div>
