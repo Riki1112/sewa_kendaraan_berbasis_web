@@ -281,17 +281,25 @@
 
 <nav class="navbar navbar-expand-lg navbar-custom px-4">
     <a class="navbar-brand fw-bold" href="#">Rental <span>Kendaraan</span></a>
-            <div class="ms-auto d-flex align-items-center gap-3">
-            <span class="user-greeting">Halo, <strong>{{ auth()->user()->name }}</strong></span>
 
-            <a href="/profile" class="btn btn-outline-primary btn-sm btn-logout">Profil</a>
+    <div class="ms-auto d-flex align-items-center gap-3">
+        <span class="user-greeting">Halo, <strong>{{ auth()->user()->name }}</strong></span>
 
-            <form method="POST" action="/logout">
-                @csrf
-                <button class="btn btn-outline-danger btn-sm btn-logout">Logout</button>
-            </form>
-        </div>
+        <!-- Tombol Panduan -->
+        <a href="{{ route('user.guide') }}" class="btn btn-info btn-sm">
+            Panduan
+        </a>
+
+        <a href="/profile" class="btn btn-outline-primary btn-sm btn-logout">Profil</a>
+
+        <form method="POST" action="/logout">
+            @csrf
+            <button class="btn btn-outline-danger btn-sm btn-logout">Logout</button>
+        </form>
+    </div>
 </nav>
+</nav>
+
 
 <div class="container py-4">
     <div class="hero">

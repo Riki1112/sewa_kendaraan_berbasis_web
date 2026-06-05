@@ -63,6 +63,10 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     ->name('process.payment');
     Route::post('/payment/success/{id}', [PaymentController::class, 'paymentSuccess']);
 
+    Route::get('/user/panduan', function () {
+    return view('user.panduan');
+})->name('user.guide');
+
 });
 
 // Vehicle Reports
