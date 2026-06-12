@@ -245,8 +245,12 @@
 
         <div class="card-body">
 
+        <img src="{{ asset('images/login.png') }}" 
+            class="img-fluid rounded mb-3 d-block mx-auto"
+            alt="Cara Login"
+            style="max-width:50%;">
+            
             <ol>
-                <li>Buka halaman login.</li>
                 <li>Masukkan email yang terdaftar.</li>
                 <li>Masukkan password akun.</li>
                 <li>Klik tombol Login.</li>
@@ -270,6 +274,11 @@
         <div class="card-body">
 
             <p>Dashboard adalah halaman utama setelah login.</p>
+
+        <img src="{{ asset('images/dashboard.png') }}" 
+        class="img-fluid rounded mb-3 d-block mx-auto"
+        alt="Cara Login"
+        style="max-width:50%;">
 
             <ul>
                 <li>Total Kendaraan</li>
@@ -297,6 +306,11 @@
                 Menu ini menampilkan seluruh kendaraan yang tersedia untuk disewa.
             </p>
 
+        <img src="{{ asset('images/daftar_kendaraan.png') }}" 
+        class="img-fluid rounded mb-3 d-block mx-auto"
+        alt="Cara Login"
+        style="max-width:50%;">
+
             <ul>
                 <li>Foto Kendaraan</li>
                 <li>Nama Kendaraan</li>
@@ -315,6 +329,11 @@
         <div class="card-header">6. Detail Kendaraan</div>
 
         <div class="card-body">
+
+        <img src="{{ asset('images/detail_kendaraan.png') }}" 
+        class="img-fluid rounded mb-3 d-block mx-auto"
+        alt="Cara Login"
+        style="max-width:50%;">
 
             <ul>
                 <li>Nama Kendaraan</li>
@@ -337,13 +356,26 @@
 
         <div class="card-body">
 
+        <img src="{{ asset('images/booking1.png') }}" 
+            class="img-fluid rounded mb-3 d-block mx-auto"
+            alt="Cara Login"
+            style="max-width:50%;">
+        <img src="{{ asset('images/booking2.png') }}" 
+            class="img-fluid rounded mb-3 d-block mx-auto"
+            alt="Cara Login"
+            style="max-width:50%;">
+        <img src="{{ asset('images/booking3.png') }}" 
+            class="img-fluid rounded mb-3 d-block mx-auto"
+            alt="Cara Login"
+            style="max-width:50%;">
+            
             <ol>
                 <li>Pilih kendaraan.</li>
                 <li>Klik tombol Booking.</li>
+                <li>Isi form booking dengan data yang benar.</li>
                 <li>Isi tanggal mulai sewa.</li>
                 <li>Isi tanggal selesai sewa.</li>
-                <li>Periksa data booking.</li>
-                <li>Klik Simpan Booking.</li>
+                <li>Klik Lanjut Booking.</li>
             </ol>
 
             <div class="alert alert-success">
@@ -361,6 +393,11 @@
         <div class="card-header">8. Riwayat Booking</div>
 
         <div class="card-body">
+
+        <img src="{{ asset('images/resi_pembayaran.png') }}" 
+        class="img-fluid rounded mb-3 d-block mx-auto"
+        alt="Cara Login"    
+        style="max-width:50%;">
 
             <ul>
                 <li>Tanggal Booking</li>
@@ -382,6 +419,11 @@
 
         <div class="card-body">
 
+        <img src="{{ asset('images/profil.png') }}" 
+        class="img-fluid rounded mb-3 d-block mx-auto"
+        alt="Cara Login"
+        style="max-width:50%;">
+
             <ul>
                 <li>Mengubah Nama Pengguna.</li>
                 <li>Mengubah Email.</li>
@@ -400,6 +442,11 @@
         <div class="card-header">10. Logout</div>
 
         <div class="card-body">
+
+        <img src="{{ asset('images/logout.png') }}" 
+        class="img-fluid rounded mb-3 d-block mx-auto"
+        alt="Cara Login"
+        style="max-width:50%;">
 
             <ol>
                 <li>Klik tombol Logout.</li>
